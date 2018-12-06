@@ -10,12 +10,17 @@ public class ArtNet:MonoBehaviour
 
     public string destinationIP = "255.255.255.255";
     public byte universe = 0x0;
+    public float fps = 30;
     public byte[] _data = new byte[512];
+
 
     private UdpClient _socket;
     private IPEndPoint _target;
 
     private byte[] _artNetPacket = new byte[530];
+
+    private float _lastTxTime = 0;
+    private float _intervalTime;
 
     public ArtNet()
     {
@@ -56,9 +61,8 @@ public class ArtNet:MonoBehaviour
 
     private void tx()
     {
-        _artNetPacket[14] = universe; //0x0;
+        _artNetPacket[14] = universe;
         Buffer.BlockCopy(_data, 0, _artNetPacket, 18, 512);
-        tx();
 
         try
         {
@@ -72,6 +76,13 @@ public class ArtNet:MonoBehaviour
 
     public void Update()
     {
-        tx();
+        _intervalTime = 1 / fps;
+
+        if (Time.time - _lastTxTime >= _intervalTime)
+        {
+            _lastTxTime = Time.time;
+            tx();
+        }
+
     }
 }
