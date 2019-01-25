@@ -8,9 +8,11 @@ using System.IO;
 public class ArtNet:MonoBehaviour
 {
 
-    public string destinationIP = "255.255.255.255";
+    public string destinationIP = "10.0.1.255";
     public byte universe = 0x0;
-    public float fps = 30;
+    private float fps = 30;
+
+    [Range(0,255)]
     public byte[] _data = new byte[512];
 
 
@@ -24,7 +26,15 @@ public class ArtNet:MonoBehaviour
 
     public ArtNet()
     {
+
+    }
+
+    public void Start()
+    {
         _target = new IPEndPoint(IPAddress.Parse(destinationIP), 6454);
+
+        Debug.Log("coonect to: " + destinationIP);
+        Debug.Log("universe: " + universe);
 
         _socket = new UdpClient();
         _socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -67,6 +77,7 @@ public class ArtNet:MonoBehaviour
         try
         {
             _socket.Send(_artNetPacket, _artNetPacket.Length);
+            Debug.Log("send");
         }
         catch (Exception e)
         {
