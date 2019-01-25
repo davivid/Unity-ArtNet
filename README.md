@@ -1,3 +1,4 @@
 # Unity-ArtNet
 
-A barebones Art-Net sending example. Work in progress.
+A single universe Art-Net sending example.
+
