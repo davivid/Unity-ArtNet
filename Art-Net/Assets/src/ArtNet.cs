@@ -10,7 +10,7 @@ public class ArtNet:MonoBehaviour
 
     public string destinationIP = "10.0.1.255";
     public byte universe = 0x0;
-    private float DMXfps = 30;
+    public float DMX_fps = 30;
 
     [Range(0,255)]
     public byte[] _data = new byte[512];
@@ -78,7 +78,7 @@ public class ArtNet:MonoBehaviour
 
     public void Update()
     {
-        _intervalTime = 1f / DMXfps;
+        _intervalTime = 1f / DMX_fps;
 
         if (Time.time - _lastTxTime >= _intervalTime)
         {
