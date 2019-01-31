@@ -50,7 +50,7 @@ public class ArtNet:MonoBehaviour
 
         //proto ver high byte first
         _artNetPacket[10] = 0x0;
-        _artNetPacket[11] = 14;
+        _artNetPacket[11] = 0x14;
 
         //TODO: Full Addressing
 
