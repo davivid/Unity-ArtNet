@@ -8,12 +8,18 @@ using System.IO;
 public class ArtNet:MonoBehaviour
 {
 
-    public string destinationIP = "10.0.1.255";
-    public byte universe = 0x0;
-    public float DMX_fps = 30;
+    [SerializeField]
+    private string _destinationIP = "10.0.1.255";
 
+    [SerializeField]
+    private byte _universe = 0x0;
+
+    [SerializeField]
+    private float _DMX_fps = 30;
+
+    [SerializeField]
     [Range(0,255)]
-    public byte[] _data = new byte[512];
+    private byte[] _data = new byte[512];
 
 
     private UdpClient _socket;
@@ -26,7 +32,7 @@ public class ArtNet:MonoBehaviour
 
     public void Start()
     {
-        _target = new IPEndPoint(IPAddress.Parse(destinationIP), 6454);
+        _target = new IPEndPoint(IPAddress.Parse(_destinationIP), 6454);
 
         _socket = new UdpClient();
         _socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -46,6 +52,8 @@ public class ArtNet:MonoBehaviour
         _artNetPacket[10] = 0x0;
         _artNetPacket[11] = 14;
 
+        //TODO: Full Addressing
+
         //sequence 
         _artNetPacket[12] = 0x0;
 
@@ -53,7 +61,7 @@ public class ArtNet:MonoBehaviour
         _artNetPacket[13] = 0x0;
 
         //universe low byte first
-        _artNetPacket[14] = 0x0;
+        _artNetPacket[14] = _universe;
         _artNetPacket[15] = 0x0;
 
         //length high byte first
@@ -63,7 +71,6 @@ public class ArtNet:MonoBehaviour
 
     private void tx()
     {
-        _artNetPacket[14] = universe;
         Buffer.BlockCopy(_data, 0, _artNetPacket, 18, 512);
 
         try
@@ -78,7 +85,7 @@ public class ArtNet:MonoBehaviour
 
     public void Update()
     {
-        _intervalTime = 1f / DMX_fps;
+        _intervalTime = 1f / _DMX_fps;
 
         if (Time.time - _lastTxTime >= _intervalTime)
         {
