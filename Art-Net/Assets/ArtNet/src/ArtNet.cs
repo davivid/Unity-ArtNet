@@ -5,17 +5,18 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 
+// [ExecuteInEditMode]
 public class ArtNet:MonoBehaviour
 {
 
     [SerializeField]
-    private string _destinationIP = "10.0.1.255";
+    private string _destinationIP = "127.0.0.1";
 
     [SerializeField]
     private byte _universe = 0x0;
 
     [SerializeField]
-    private float _DMX_fps = 30;
+    private float _outputHz = 44;
 
     [SerializeField]
     [Range(0,255)]
@@ -85,13 +86,29 @@ public class ArtNet:MonoBehaviour
 
     public void Update()
     {
-        _intervalTime = 1f / _DMX_fps;
+        _intervalTime = 1f / _outputHz;
 
         if (Time.time - _lastTxTime >= _intervalTime)
         {
             _lastTxTime = Time.time;
             tx();
         }
+    }
 
+    public bool setChannel(int channel, int value)
+    {
+        // Debug.Log("set Channel: " + channel + " set Value: " + value);
+        if (channel < 1) return false;
+        if (channel > 511) return false;
+        if (value < 0) return false;
+        if (value > 255) return false;
+
+        _data[channel-1] = Convert.ToByte(value);
+        return true;
+    }
+
+    public void setDestiniationIP(string val)
+    {
+        _destinationIP = val;
     }
 }
